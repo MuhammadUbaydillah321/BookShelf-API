@@ -69,64 +69,24 @@ const addBookHandler = (request, h) => {
 const getAllBooksHandler = (request, h) => {
   const { name: queryName, reading, finished } = request.query;
 
-  if (!queryName && !reading && !finished) {
-    const response = h.response({
-      status: 'success',
-      data: {
-        books: books.map((book) => ({
-          id: book.id,
-          name: book.name,
-          publisher: book.publisher,
-        })),
-      },
-    });
-    response.code(200);
-    return response;
-  }
-
-  if (queryName) {
-    const filteredBooksName = books.filter((book) => {
+  const filteredBooks = books.filter((book) => {
+    if (queryName) {
       const nameRegex = new RegExp(queryName, 'gi');
       return nameRegex.test(book.name);
-    });
+    }
+    if (reading !== undefined) {
+      return Number(book.reading) === Number(reading);
+    }
+    if (finished !== undefined) {
+      return Number(book.finished) === Number(finished);
+    }
+    return true; // Jika tidak ada query, semua buku akan ditampilkan
+  });
 
-    const response = h
-      .response({
-        status: 'success',
-        data: {
-          books: filteredBooksName.map((book) => ({
-            id: book.id,
-            name: book.name,
-            publisher: book.publisher,
-          })),
-        },
-      })
-      .code(200);
-
-    return response;
-  }
-
-  if (reading) {
-    const bookFilterReading = books.filter((book) => Number(book.reading) === Number(reading));
-    const response = h.response({
-      status: 'success',
-      data: {
-        books: bookFilterReading.map((book) => ({
-          id: book.id,
-          name: book.name,
-          publisher: book.publisher,
-        })),
-      },
-    });
-    response.code(200);
-    return response;
-  }
-
-  const bookFilterFinished = books.filter((book) => Number(book.finished) === Number(finished));
   const response = h.response({
     status: 'success',
     data: {
-      books: bookFilterFinished.map((book) => ({
+      books: filteredBooks.map((book) => ({
         id: book.id,
         name: book.name,
         publisher: book.publisher,

@@ -80,7 +80,7 @@ const getAllBooksHandler = (request, h) => {
     if (finished !== undefined) {
       return Number(book.finished) === Number(finished);
     }
-    return true; // Jika tidak ada query, semua buku akan ditampilkan
+    return true;
   });
 
   const response = h.response({

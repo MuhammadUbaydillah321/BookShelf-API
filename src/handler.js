@@ -75,10 +75,10 @@ const getAllBooksHandler = (request, h) => {
       return nameRegex.test(book.name);
     }
     if (reading !== undefined) {
-      return Number(book.reading) === Number(reading);
+      return book.reading === (reading === '1');
     }
     if (finished !== undefined) {
-      return Number(book.finished) === Number(finished);
+      return book.finished === (finished === '1');
     }
     return true;
   });
